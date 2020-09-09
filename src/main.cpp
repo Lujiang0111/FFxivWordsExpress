@@ -12,11 +12,14 @@ typedef struct WordExpress_
 	std::vector<std::string> vecWord;
 }SWordExpress;
 
+
 std::string ParseChineseSymbol(const char *source, int &chineseLen)
 {
 	chineseLen = 0;
 	std::string sChinese;
 	size_t length = strlen(source);
+
+	bool findStart = false;
 	size_t cur = 0;
 	while (cur < length)
 	{
@@ -28,6 +31,12 @@ std::string ParseChineseSymbol(const char *source, int &chineseLen)
 		{
 			// 溢出判断
 			if (cur + 2 >= length)
+			{
+				break;
+			}
+
+			// 只有当state为WORD_STATE_START时才开始计数
+			if (!findStart)
 			{
 				break;
 			}
@@ -64,11 +73,24 @@ std::string ParseChineseSymbol(const char *source, int &chineseLen)
 		}
 		else
 		{
+			// 以"作为开始和结束符
+			if (0x22 == source[cur])
+			{
+				if (findStart)
+				{
+					return sChinese;
+				}
+				else
+				{
+					findStart = true;
+				}
+			}
+
 			cur += 1;
 		}
 	}
 
-	return sChinese;
+	return "";
 }
 
 void ExpressFromCsv(SWordExpress *h, const char *fileName)
@@ -113,9 +135,9 @@ void ExpressFromCsv(SWordExpress *h, const char *fileName)
 	fin.close();
 }
 
-void ExpressFromFile(SWordExpress *h, const SFileInfo *fileInfo)
+void ExpressFromFile(SWordExpress *h, const SPlatformFileInfo *fileInfo)
 {
-	const SFileInfo *cur = fileInfo;
+	const SPlatformFileInfo *cur = fileInfo;
 	while (cur)
 	{
 		if (cur->child)
@@ -123,12 +145,12 @@ void ExpressFromFile(SWordExpress *h, const SFileInfo *fileInfo)
 			ExpressFromFile(h, cur->child);
 		}
 
-		if (FILE_MODE_NORMAL_FILE == cur->mode)
+		if (PF_MODE_NORMAL_FILE == cur->mode)
 		{
 			if (strstr(cur->name, ".csv"))
 			{
-				printf("%s\n", cur->name);
-				ExpressFromCsv(h, cur->name);
+				printf("%s\n", cur->fullName);
+				ExpressFromCsv(h, cur->fullName);
 			}
 		}
 
@@ -150,7 +172,7 @@ int main(int argc, char* argv[])
 	}
 
 	std::string path = argv[1];
-	SFileInfo *fileInfo = GetFileInfo(path.c_str());
+	SPlatformFileInfo *fileInfo = GetFileInfo(path.c_str(), PF_SORT_MODE_NONE);
 
 	SWordExpress *h = new SWordExpress();
 	ExpressFromFile(h, fileInfo);
