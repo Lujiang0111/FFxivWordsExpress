@@ -3,15 +3,9 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <vector>
+#include <set>
 #include <algorithm>
 #include "PlatformFile.h"
-
-typedef struct WordExpress_
-{
-	std::vector<std::string> vecWord;
-}SWordExpress;
-
 
 std::string ParseChineseSymbol(const char *source, int &chineseLen)
 {
@@ -93,7 +87,7 @@ std::string ParseChineseSymbol(const char *source, int &chineseLen)
 	return "";
 }
 
-void ExpressFromCsv(SWordExpress *h, const char *fileName)
+void ExpressFromCsv(std::set<std::string> &setWord, const char *fileName)
 {
 	std::ifstream fin;
 	fin.open(fileName, std::ios::in);
@@ -102,6 +96,7 @@ void ExpressFromCsv(SWordExpress *h, const char *fileName)
 	while (std::getline(fin, sline))
 	{
 		char *line = new char[sline.length() + 1];
+
 		// 去除BOM
 		if ((sline.length() > 3) && (0xEF == (uint8_t)sline[0]) && (0xBB == (uint8_t)sline[1]) && (0xBF == (uint8_t)sline[2]))
 		{
@@ -118,11 +113,11 @@ void ExpressFromCsv(SWordExpress *h, const char *fileName)
 			int chineseLen = 0;
 			std::string word = ParseChineseSymbol(p, chineseLen);
 
-			if ((chineseLen >= 3) && (chineseLen <= 10))
+			if ((chineseLen >= 3) && (chineseLen <= 8))
 			{
 				if (word.length() > 0)
 				{
-					h->vecWord.push_back(word);
+					setWord.insert(word);
 				}
 			}
 
@@ -135,14 +130,14 @@ void ExpressFromCsv(SWordExpress *h, const char *fileName)
 	fin.close();
 }
 
-void ExpressFromFile(SWordExpress *h, const SPlatformFileInfo *fileInfo)
+void ExpressFromFile(std::set<std::string> &setWord, const SPlatformFileInfo *fileInfo)
 {
 	const SPlatformFileInfo *cur = fileInfo;
 	while (cur)
 	{
 		if (cur->child)
 		{
-			ExpressFromFile(h, cur->child);
+			ExpressFromFile(setWord, cur->child);
 		}
 
 		if (PF_MODE_NORMAL_FILE == cur->mode)
@@ -150,7 +145,7 @@ void ExpressFromFile(SWordExpress *h, const SPlatformFileInfo *fileInfo)
 			if (strstr(cur->name, ".csv"))
 			{
 				printf("%s\n", cur->fullName);
-				ExpressFromCsv(h, cur->fullName);
+				ExpressFromCsv(setWord, cur->fullName);
 			}
 		}
 
@@ -165,36 +160,36 @@ static void ShowUsage(const std::string &progName)
 
 int main(int argc, char* argv[])
 {
+	std::string path;
 	if (argc < 2)
 	{
-		ShowUsage(argv[0]);
-		return 1;
+		std::cout << "Input csv root path: ";
+		std::cin >> path;
+	}
+	else
+	{
+		path = argv[1];
 	}
 
-	std::string path = argv[1];
 	SPlatformFileInfo *fileInfo = GetFileInfo(path.c_str(), PF_SORT_MODE_NONE);
 
-	SWordExpress *h = new SWordExpress();
-	ExpressFromFile(h, fileInfo);
+	std::set<std::string> setWord;
+	ExpressFromFile(setWord, fileInfo);
 
 	std::ofstream fout;
 	fout.open("words.csv", std::ios::out);
-	if (h->vecWord.size() > 0)
+	if (setWord.size() > 0)
 	{
-		std::sort(h->vecWord.begin(), h->vecWord.end());
-		h->vecWord.erase(std::unique(h->vecWord.begin(), h->vecWord.end()), h->vecWord.end());
-
 		// add BOM
 		char cBom[] = { (char)0xEF, (char)0xBB, (char)0xBF, (char)0x00 };
 		std::string sBom = cBom;
 		fout << sBom;
 
-		for (size_t i = 0; i < h->vecWord.size(); ++i)
+		for (const auto &x : setWord)
 		{
-			fout << h->vecWord[i] << std::endl;
+			fout << x << std::endl;
 		}
 	}
-	delete h;
 
 	FreeFileInfo(&fileInfo);
 	return 0;
