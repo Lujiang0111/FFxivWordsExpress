@@ -6,5 +6,5 @@ mkdir %dep_base%include
 mkdir %dep_base%lib
 
 echo off
-echo "Put the PlatformBase inlude file to %dep_base%include\PlatformBase"
-echo "Put the PlatformBase lib file to %dep_base%lib"
+echo "Put the los inlude file to %dep_base%include"
+echo "Put the los lib file to %dep_base%lib"

@@ -5,10 +5,6 @@ VisualStudioVersion = 15.0.28307.1062
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FFxivWordsExpress", "FFxivWordsExpress.vcxproj", "{DB41C24C-07CE-4382-8354-3C5FDE41C9E2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PlatformBase", "..\..\..\..\..\..\sumard5\Project\Venus\Ability\Baselib\PlatformBase\trunk\develop\build\windows\vs2017\x64\PlatformBase.vcxproj", "{BA5E7D98-FF8E-4875-872C-1865D3DD5873}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Baselib", "Baselib", "{912482C0-73B1-45B9-94CD-A0D4DA2D8225}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -25,20 +21,9 @@ Global
 		{DB41C24C-07CE-4382-8354-3C5FDE41C9E2}.Release|x64.Build.0 = Release|x64
 		{DB41C24C-07CE-4382-8354-3C5FDE41C9E2}.Release|x86.ActiveCfg = Release|Win32
 		{DB41C24C-07CE-4382-8354-3C5FDE41C9E2}.Release|x86.Build.0 = Release|Win32
-		{BA5E7D98-FF8E-4875-872C-1865D3DD5873}.Debug|x64.ActiveCfg = Debug|x64
-		{BA5E7D98-FF8E-4875-872C-1865D3DD5873}.Debug|x64.Build.0 = Debug|x64
-		{BA5E7D98-FF8E-4875-872C-1865D3DD5873}.Debug|x86.ActiveCfg = Debug|Win32
-		{BA5E7D98-FF8E-4875-872C-1865D3DD5873}.Debug|x86.Build.0 = Debug|Win32
-		{BA5E7D98-FF8E-4875-872C-1865D3DD5873}.Release|x64.ActiveCfg = Release|x64
-		{BA5E7D98-FF8E-4875-872C-1865D3DD5873}.Release|x64.Build.0 = Release|x64
-		{BA5E7D98-FF8E-4875-872C-1865D3DD5873}.Release|x86.ActiveCfg = Release|Win32
-		{BA5E7D98-FF8E-4875-872C-1865D3DD5873}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{BA5E7D98-FF8E-4875-872C-1865D3DD5873} = {912482C0-73B1-45B9-94CD-A0D4DA2D8225}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {19954032-C299-41FC-B1AC-1934653C63F1}
